@@ -1,0 +1,14 @@
+{
+  "name": "njwt_api",
+  "main": "server.js",
+  "version": "0.0.1",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.3",
+    "morgan": "^1.8.2",
+    "njwt": "^0.4.0",
+    "uuid": "^3.1.0"
+  }
+}

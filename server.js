@@ -4,6 +4,7 @@ var express     = require('express');
 var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose');
 var morgan      = require('morgan');
+var cors        = require('cors');
 var app         = express();
 var generateKey = uuidV4();
 var User        = require('./app/models/user');
@@ -16,6 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
+
+app.use(cors());
 
 app.get('/', function(req, res){
     res.send('You are awesome!');
@@ -72,6 +75,25 @@ apiRoutes.post('/verify-token', function(req, res){
     if(token){
         var verifyJwt = nJwt.verify(token, signingKey);
         res.send(verifyJwt);
+    }
+});
+
+apiRoutes.get('/account-data', function(req, res){
+    var token = req.headers.token;
+
+    if (token) {
+        var verifyJwt = nJwt.verify(token, signingKey);
+        User.find({}, function(err, user) {
+            if (err) throw err;
+
+            if (verifyJwt.body._doc.role == 'admin') {
+                res.json(user);
+            } else {
+                return res.status(403).send('YOU ARE FORBIDDEN');
+            }
+        });
+    } else {
+        return res.status(403).send({success: false, msg: 'Tidak ada token.'});
     }
 });
 
